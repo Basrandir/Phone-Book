@@ -104,10 +104,10 @@ enum attribute getAttribute() {
   }
 }
 
-char* getValue() {
+char* getValue(char valueName[]) {
   static char value[NAME_SIZE];
   
-  printf("Enter Value: ");
+  printf("Enter %s: ", valueName);
   scanf("%s", value);
 
   return value;
