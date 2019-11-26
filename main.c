@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define NAME_SIZE 20
 
@@ -23,11 +24,11 @@ enum attribute getAttribute();
 char* getValue();
 
 void addRecord(PhoneBook phoneBook, RecordPtr record);
-void retrieveRecord(PhoneBook phoneBook, enum attribute attr, char value[]);
-void deleteRecord(PhoneBook phoneBook, enum attribute attr, char value[]);
+void retrieveRecord(PhoneBook phoneBook);
+void deleteRecord(PhoneBook phoneBook);
 void loadFile(PhoneBook phoneBook);
 void saveFile(PhoneBook phoneBook);
-void sortPhoneBook(PhoneBook phoneBook, enum attribute attr);
+void sortPhoneBook(PhoneBook phoneBook);
 
 int main() {
 
@@ -52,10 +53,10 @@ int main() {
     addRecord(phoneBook, createRecord());
     break;
   case 2:
-    retrieveRecord(phoneBook, getAttribute(), getValue());
+    retrieveRecord(phoneBook);
     break;
   case 3:
-    deleteRecord(phoneBook, getAttribute(), getValue());
+    deleteRecord(phoneBook);
     break;
   case 4:
     loadFile(phoneBook);
@@ -64,9 +65,50 @@ int main() {
     saveFile(phoneBook);
     break;
   case 6:
-    sortPhoneBook(phoneBook, getAttribute());
+    sortPhoneBook(phoneBook);
     break;
   case 7:
     exit(0);
   }
+}
+
+RecordPtr createRecord() {
+  RecordPtr newRecord = (RecordPtr) malloc(sizeof (Record));
+
+  printf("First Name: ");
+  scanf("%s", newRecord->firstName);
+
+  printf("Last Name: ");
+  scanf("%s", newRecord->lastName);
+
+  printf("Phone Number: ");
+  scanf("%d", &(newRecord->number));
+
+  return newRecord;
+}
+
+enum attribute getAttribute() {
+  char dataType[10];
+
+  while(1) {
+    printf("Data type: (first name/last name/number) ");
+    scanf("%s", dataType);
+    
+    if(strcmp(dataType, "first name")) {
+      return FirstName;
+    } else if(strcmp(dataType, "last name")) {
+      return LastName;
+    } else if(strcmp(dataType, "number")) {
+      return PhoneNumber;
+    }
+  }
+}
+
+char* getValue() {
+  static char value[NAME_SIZE];
+  
+  printf("Enter Value: ");
+  scanf("%s", value);
+
+  return value;
 }
