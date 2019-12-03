@@ -5,9 +5,8 @@
 #define NAME_SIZE 20
 
 typedef struct record {
-  char firstName[NAME_SIZE];
-  char lastName[NAME_SIZE];
-  int number;
+  char value[3][NAME_SIZE];
+  
   struct record *left;
   struct record *right;
 } Record, *RecordPtr;
