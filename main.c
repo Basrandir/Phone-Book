@@ -47,17 +47,17 @@ int main() {
   byPhoneNumber.size = 0;
   byPhoneNumber.type = 2;
   
-  printf("\n\t\t\tPHONE BOOK\n\n");
-  printf("--------------------------\n");
-  printf("\t[1]\tAdd Contact\n");
-  printf("\t[2]\tRetrieve Contact\n");
-  printf("\t[3]\tDelete Contact\n");
-  printf("\t[4]\tLoad Phone Book\n");
-  printf("\t[5]\tSave Phone Book\n");
-  printf("\t[6]\tSort Phone Book\n");
-  printf("\t[7]\tExit\n");
+  printf("\tPHONE BOOK\n");
+  printf("[1] Add Contact\n");
+  printf("[2] Retrieve Contact\n");
+  printf("[3] Delete Contact\n");
+  printf("[4] Load Phone Book\n");
+  printf("[5] Save Phone Book\n");
+  printf("[6] Sort Phone Book\n");
+  printf("[7] Exit\n");
 
   int option;
+  printf("> ");
   scanf("%d", &option);
 
   switch(option) {
