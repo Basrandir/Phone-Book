@@ -128,21 +128,24 @@ void populateTree(PhoneBook phoneBook, RecordPtr record) {
   int type = phoneBook.type;
   int cmp;
 
-  while((cmp = strcmp(record->value[type], current->value[type])) != 0) {
-    if (cmp < 0) { // Left
-      if (current->left == NULL) {
-	current->left = record;
-	break;
-      } else
-	current = current->left;
-    } else { // Right
-      if (current->right == NULL) {
-	current->right = record;
-	break;
-      } else
-	current = current->right;
+  if(current != NULL) {
+    while((cmp = strcmp(record->value[type], current->value[type])) != 0) {
+      if (cmp < 0) { // Left
+	if (current->left == NULL) {
+	  current->left = record;
+	  break;
+	} else
+	  current = current->left;
+      } else { // Right
+	if (current->right == NULL) {
+	  current->right = record;
+	  break;
+	} else
+	  current = current->right;
+      }
     }
-  }
+  } else
+    current = record;
 }
 
 RecordPtr searchTree(PhoneBook phoneBook, char value[]) {
