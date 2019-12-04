@@ -25,6 +25,7 @@ char* getValue(char attribute[]);
 void populateTree(PhoneBook phoneBook, RecordPtr record);
 RecordPtr searchTree(PhoneBook phoneBook, char value[]);
 void printTree(RecordPtr record);
+RecordPtr smallestValue(RecordPtr record);
 
 void addRecord(Record record);
 void retrieveRecord();
@@ -172,6 +173,13 @@ void printTree(RecordPtr record) {
     printf("Name: %s %s\nNumber: %s\n\n", record->value[0], record->value[1], record->value[2]);
     printTree(record->right);
   }
+}
+
+RecordPtr smallestValue(RecordPtr record) {
+  while (record && record->left != NULL)
+    record = record->left;
+
+  return record;
 }
 
 void addRecord(Record record) {
