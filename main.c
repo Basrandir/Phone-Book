@@ -3,6 +3,7 @@
 #include <string.h>
 
 #define NAME_SIZE 20
+#define NUM_TREES 3
 
 typedef struct record {
   char value[3][NAME_SIZE];
@@ -32,55 +33,53 @@ void loadFile();
 void saveFile();
 void sortPhoneBook();
 
-static PhoneBook byFirstName;
-static PhoneBook byLastName;
-static PhoneBook byPhoneNumber;
+static PhoneBook trees[NUM_TREES];
 
 int main() {
 
-  byFirstName.size = 0;
-  byFirstName.type = 0;
-  
-  byLastName.size = 0;
-  byLastName.type = 1;
-  
-  byPhoneNumber.size = 0;
-  byPhoneNumber.type = 2;
-  
-  printf("\tPHONE BOOK\n");
-  printf("[1] Add Contact\n");
-  printf("[2] Retrieve Contact\n");
-  printf("[3] Delete Contact\n");
-  printf("[4] Load Phone Book\n");
-  printf("[5] Save Phone Book\n");
-  printf("[6] Sort Phone Book\n");
-  printf("[7] Exit\n");
+  // Setup the trees
+  for (int i = 0; i < NUM_TREES; i++) {
+    trees[i].size = 0;
+    trees[i].type = i;
+  }
 
-  int option;
-  printf("> ");
-  scanf("%d", &option);
-
-  switch(option) {
-  case 1:
-    addRecord(createRecord());
-    break;
-  case 2:
-    retrieveRecord();
-    break;
-  case 3:
-    deleteRecord();
-    break;
-  case 4:
-    loadFile();
-    break;
-  case 5:
-    saveFile();
-    break;
-  case 6:
-    sortPhoneBook();
-    break;
-  case 7:
-    exit(0);
+  int cont = 1;
+  while(cont) {
+    printf("\tPHONE BOOK\n");
+    printf("[1] Add Contact\n");
+    printf("[2] Retrieve Contact\n");
+    printf("[3] Delete Contact\n");
+    printf("[4] Load Phone Book\n");
+    printf("[5] Save Phone Book\n");
+    printf("[6] Sort Phone Book\n");
+    printf("[7] Exit\n");
+    
+    int option;
+    printf("> ");
+    scanf("%d", &option);
+    
+    switch(option) {
+    case 1:
+      addRecord(createRecord());
+      break;
+    case 2:
+      retrieveRecord();
+      break;
+    case 3:
+      deleteRecord();
+      break;
+    case 4:
+      loadFile();
+      break;
+    case 5:
+      saveFile();
+      break;
+    case 6:
+      sortPhoneBook();
+      break;
+    case 7:
+      cont = 0;
+    }
   }
 }
 
@@ -145,7 +144,7 @@ void populateTree(PhoneBook phoneBook, RecordPtr record) {
       }
     }
   } else
-    current = record;
+    trees[type].rootRecord = record;
 }
 
 RecordPtr searchTree(PhoneBook phoneBook, char value[]) {
@@ -176,17 +175,18 @@ void printTree(RecordPtr record) {
 }
 
 void addRecord(Record record) {
-  Record records[2];
+  RecordPtr records[NUM_TREES];
 
-  for(int i = 0; i < 2; i++) {
+  for(int i = 0; i < NUM_TREES; i++) {
+    records[i] = (RecordPtr) malloc(sizeof (Record));
     for(int j = 0; j < 3; j++) {
-      strcpy(records[i].value[j], record.value[j]);
+      strcpy(records[i]->value[j], record.value[j]);
     }
   }
-  
-  populateTree(byFirstName, &record);
-  populateTree(byLastName, &records[0]);
-  populateTree(byPhoneNumber, &records[1]);
+
+  for(int i = 0; i < NUM_TREES; i++) {
+    populateTree(trees[i], records[i]);
+  }
 }
 
 void retrieveRecord() {
@@ -194,35 +194,40 @@ void retrieveRecord() {
   char* value = getValue(attribute);
 
   RecordPtr record;
-  
-  if (strcmp(attribute, "first name"))
-    record = searchTree(byFirstName, value);
-  else if (strcmp(attribute, "last name"))
-    record = searchTree(byLastName, value);
-  else
-    record = searchTree(byPhoneNumber, value);
 
-  printf("Name: %s %s\nNumber: %s", record->value[0], record->value[1], record->value[1]); 
+  if (strcmp(attribute, "First Name") == 0) {
+    record = searchTree(trees[0], value);
+  }
+  else if (strcmp(attribute, "Last Name") == 0) {
+    record = searchTree(trees[1], value);
+  }
+  else {
+    record = searchTree(trees[2], value);
+  }
+  
+  char linebreak[] = "-------------------------------------";
+  printf("%s\n\tName: %s %s\n\tNumber: %s\n%s\n", linebreak, record->value[0], record->value[1], record->value[2], linebreak); 
 }
 
 void deleteRecord() {
   char* attribute = getAttribute();
   char* value = getValue(attribute);
 
-  RecordPtr records[3];
-
+  RecordPtr records[NUM_TREES];
+  
   if (strcmp(attribute, "first name")) {
-    records[0] = searchTree(byFirstName, value);
-    records[1] = searchTree(byLastName, records[0]->value[1]);
-    records[2] = searchTree(byPhoneNumber, records[0]->value[2]);
+    records[0] = searchTree(trees[0], value);
+    records[1] = searchTree(trees[1], records[0]->value[1]);
+    records[2] = searchTree(trees[2], records[0]->value[2]);
   } else if (strcmp(attribute, "last name")) {
-    records[1] = searchTree(byLastName, value);
-    records[0] = searchTree(byFirstName, records[1]->value[0]);
-    records[2] = searchTree(byPhoneNumber, records[1]->value[2]);
+    records[1] = searchTree(trees[1], value);
+    records[0] = searchTree(trees[0], records[1]->value[0]);
+    records[2] = searchTree(trees[2], records[1]->value[2]);
   } else {
-    records[2] = searchTree(byPhoneNumber, value);
-    records[0] = searchTree(byFirstName, records[2]->value[0]);
-    records[1] = searchTree(byLastName, records[2]->value[1]);
+    records[2] = searchTree(trees[2], value);
+    records[0] = searchTree(trees[0], records[2]->value[0]);
+    records[1] = searchTree(trees[1], records[2]->value[1]);
+    }
   }
 }
 
@@ -236,9 +241,8 @@ void loadFile() {
     RecordPtr newRecord = (RecordPtr) malloc(sizeof (Record));
     strcpy(newRecord->value[i], values[i]);
 
-    populateTree(byFirstName, newRecord);
-    populateTree(byLastName, newRecord);
-    populateTree(byPhoneNumber, newRecord);
+    for (int i = 0; i < NUM_TREES; i++) 
+      populateTree(trees[i], newRecord);
   }
 
   fclose(fptr);
@@ -248,16 +252,16 @@ void saveFile() {
   char filename[] = "records.txt";
   FILE *fptr = fopen(filename, "w");
 
-  RecordPtr current = byLastName.rootRecord;
+  RecordPtr current = trees[1].rootRecord;
 }
 
 void sortPhoneBook() {
   char* attribute = getAttribute();
 
-  if (strcmp(attribute, "first name"))
-    printTree(byFirstName.rootRecord);
-  else if (strcmp(attribute, "last name"))
-    printTree(byLastName.rootRecord);
+  if (strcmp(attribute, "First Name") == 0)
+    printTree(trees[0].rootRecord);
+  else if (strcmp(attribute, "Last Name") == 0)
+    printTree(trees[1].rootRecord);
   else
-    printTree(byPhoneNumber.rootRecord);
+    printTree(trees[2].rootRecord);
 }
