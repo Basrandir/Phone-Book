@@ -129,7 +129,6 @@ char* getValue(char attribute[]) {
   
   printf("Enter %s: ", attribute);
   scanf("%s", value);
-
   return value;
 }
 
@@ -178,7 +177,7 @@ RecordPtr searchTree(PhoneBook phoneBook, char value[]) {
   return NULL;
 }
 
-void printTree(RecordPtr record) {
+void printTree(RecordPtr record) { // inorder traversal
   if (record != NULL) {
     printTree(record->left);
     printf("Name: %s %s\nNumber: %s\n\n", record->value[0], record->value[1], record->value[2]);
