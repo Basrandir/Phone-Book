@@ -101,14 +101,25 @@ Record createRecord() {
 }
 
 char* getAttribute() {
-  static char dataType[10];
+  int attribute;
 
   while(1) {
-    printf("Data type: (first name/last name/number) ");
-    scanf("%s", dataType);
+    printf("Search by:\n");
+    printf("[1] First Name\n");
+    printf("[2] Last Name\n");
+    printf("[3] Phone Number\n");
+    printf("> ");
+    scanf("%d", &attribute);
     
-    if(strcmp(dataType, "first name") || strcmp(dataType, "last name") || strcmp(dataType, "number")) {
-      return dataType;
+    switch(attribute) {
+    case 1:
+      return "First Name";
+    case 2:
+      return "Last Name";
+    case 3:
+      return "Phone Number";
+    default:
+      printf("Incorrect Number\n");
     }
   }
 }
