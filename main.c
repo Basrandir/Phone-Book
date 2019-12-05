@@ -140,6 +140,7 @@ void populateTree(PhoneBook phoneBook, RecordPtr record) {
   int cmp;
 
   if(current != NULL) {
+
     while((cmp = strcmp(record->value[type], current->value[type])) != 0) {
       if (cmp < 0) { // Left
 	if (current->left == NULL) {
@@ -186,6 +187,47 @@ void printTree(RecordPtr record) { // inorder traversal
   }
 }
 
+RecordPtr delete(RecordPtr root, char value[], int type) {
+  
+  //searching for the item to be deleted
+  if(root==NULL)
+    return NULL;
+
+  int cmp = strcmp(value, root->value[type]);
+  
+  if (cmp < 0)
+    root->left = delete(root->left, value, type);
+  else if(cmp > 0)
+    root->right = delete(root->right, value, type);
+  else {
+    //No Children
+    if(root->left == NULL && root->right == NULL) {
+      free(root);
+      return NULL;
+    }
+
+    //One Child
+    else if(root->left == NULL || root->right == NULL) {
+      RecordPtr temp;
+      if(root->left == NULL)
+	temp = root->right;
+      else
+	temp = root->left;
+      free(root);
+      return temp;
+    }
+  
+    //Two Children
+    else {
+      RecordPtr temp = smallestValue(root->right);
+      for(int i = 0; i < 3; i++)
+	strcpy(root->value[i], temp->value[i]);
+      root->right = delete(root->right, temp->value[type], type);
+    }
+  }  
+  return root;
+}
+
 RecordPtr smallestValue(RecordPtr record) {
   while (record && record->left != NULL)
     record = record->left;
@@ -209,7 +251,7 @@ void addRecord(Record record) {
 }
 
 void retrieveRecord() {
-  char* attribute = getAttribute();
+  char* attribute = getAttribute("Search");
   char* value = getValue(attribute);
 
   RecordPtr record;
@@ -229,25 +271,20 @@ void retrieveRecord() {
 }
 
 void deleteRecord() {
-  char* attribute = getAttribute();
+  char* attribute = getAttribute("Delete");
   char* value = getValue(attribute);
 
-  RecordPtr records[NUM_TREES];
-  
-  if (strcmp(attribute, "first name")) {
-    records[0] = searchTree(trees[0], value);
-    records[1] = searchTree(trees[1], records[0]->value[1]);
-    records[2] = searchTree(trees[2], records[0]->value[2]);
-  } else if (strcmp(attribute, "last name")) {
-    records[1] = searchTree(trees[1], value);
-    records[0] = searchTree(trees[0], records[1]->value[0]);
-    records[2] = searchTree(trees[2], records[1]->value[2]);
-  } else {
-    records[2] = searchTree(trees[2], value);
-    records[0] = searchTree(trees[0], records[2]->value[0]);
-    records[1] = searchTree(trees[1], records[2]->value[1]);
-    }
-  }
+  RecordPtr toBeDeleted;
+
+  if(strcmp(attribute, "First Name") == 0)
+    toBeDeleted = searchTree(trees[0], value);
+  else if(strcmp(attribute, "Last Name") == 0)
+    toBeDeleted = searchTree(trees[1], value);
+  else
+    toBeDeleted = searchTree(trees[2], value);
+    
+  for(int i = 0; i < NUM_TREES; i++)
+    trees[i].rootRecord = delete(trees[i].rootRecord, toBeDeleted->value[i], i);
 }
 
 void loadFile() {
@@ -275,7 +312,7 @@ void saveFile() {
 }
 
 void sortPhoneBook() {
-  char* attribute = getAttribute();
+  char* attribute = getAttribute("Sort");
 
   if (strcmp(attribute, "First Name") == 0)
     printTree(trees[0].rootRecord);
