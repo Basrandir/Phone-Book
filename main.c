@@ -19,12 +19,13 @@ typedef struct {
 } PhoneBook;
 
 Record createRecord();
-char* getAttribute();
+char* getAttribute(char type[]);
 char* getValue(char attribute[]);
 
 void populateTree(PhoneBook phoneBook, RecordPtr record);
 RecordPtr searchTree(PhoneBook phoneBook, char value[]);
 void printTree(RecordPtr record);
+RecordPtr delete(RecordPtr root, char value[], int type);
 RecordPtr smallestValue(RecordPtr record);
 
 void addRecord(Record record);
@@ -100,11 +101,11 @@ Record createRecord() {
   return newRecord;
 }
 
-char* getAttribute() {
+char* getAttribute(char type[]) {
   int attribute;
 
   while(1) {
-    printf("Search by:\n");
+    printf("%s by:\n", type);
     printf("[1] First Name\n");
     printf("[2] Last Name\n");
     printf("[3] Phone Number\n");
