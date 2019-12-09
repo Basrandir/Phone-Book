@@ -117,6 +117,21 @@ void printTree(RecordPtr record) { // inorder traversal
   }
 }
 
+void save(RecordPtr record) { // preorder traversal
+  char filename[] = "records.txt";
+  FILE *fptr = fopen(filename, "w");
+
+  if (record != NULL) {
+    for(int i = 0; i < 3; i++)
+      fprintf(fptr, "%s", record->value[i]);
+    
+    fprintf(fptr, "%c", '\n');
+    
+    save(record->left);
+    save(record->right);
+  }
+}
+
 RecordPtr delete(RecordPtr root, char value[], int type) {
   
   //searching for the item to be deleted
@@ -243,10 +258,7 @@ void loadFile() {
 }
 
 void saveFile() {
-  char filename[] = "records.txt";
-  FILE *fptr = fopen(filename, "w");
-
-  RecordPtr current = trees[1].rootRecord;
+  save(trees[0].rootRecord); // save by last name
 }
 
 void sortPhoneBook() {
