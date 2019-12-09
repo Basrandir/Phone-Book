@@ -117,18 +117,15 @@ void printTree(RecordPtr record) { // inorder traversal
   }
 }
 
-void save(RecordPtr record) { // preorder traversal
-  char filename[] = "records.txt";
-  FILE *fptr = fopen(filename, "w");
-
+void save(RecordPtr record, FILE *fptr) { // preorder traversal
   if (record != NULL) {
     for(int i = 0; i < 3; i++)
-      fprintf(fptr, "%s", record->value[i]);
+      fprintf(fptr, "%s ", record->value[i]);
     
     fprintf(fptr, "%c", '\n');
     
-    save(record->left);
-    save(record->right);
+    save(record->left, fptr);
+    save(record->right, fptr);
   }
 }
 
@@ -258,7 +255,14 @@ void loadFile() {
 }
 
 void saveFile() {
-  save(trees[0].rootRecord); // save by last name
+  char filename[] = "records.txt";
+  FILE *fptr = fopen(filename, "w");
+  save(trees[0].rootRecord, fptr); // save by last name
+
+  if (feof(fptr))
+      printf("%s saved successfully\n", filename);
+  
+  fclose(fptr);
 }
 
 void sortPhoneBook() {

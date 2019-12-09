@@ -22,7 +22,7 @@ char* getValue(char attribute[]);
 void populateTree(PhoneBook phoneBook, RecordPtr record);
 RecordPtr searchTree(PhoneBook phoneBook, char value[]);
 void printTree(RecordPtr record);
-void save(RecordPtr record);
+void save(RecordPtr record, FILE *fptr);
 RecordPtr delete(RecordPtr root, char value[], int type);
 RecordPtr smallestValue(RecordPtr record);
 
