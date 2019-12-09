@@ -110,7 +110,9 @@ RecordPtr searchTree(PhoneBook phoneBook, char value[]) {
 void printTree(RecordPtr record) { // inorder traversal
   if (record != NULL) {
     printTree(record->left);
-    printf("Name: %s %s\nNumber: %s\n\n", record->value[0], record->value[1], record->value[2]);
+    
+    char linebreak[] = "-------------------------------------";
+    printf("%s\n\tName: %s %s\n\tNumber: %s\n%s\n", linebreak, record->value[0], record->value[1], record->value[2], linebreak); 
     printTree(record->right);
   }
 }
@@ -219,16 +221,24 @@ void loadFile() {
   char filename[] = "records.txt";
   FILE *fptr = fopen(filename, "r");
 
-  char values[3][NAME_SIZE];
+  char value[3][NAME_SIZE];
 
-  for (int i = 0; i < 3; i++, fscanf(fptr, "%s", values[i])) {
-    RecordPtr newRecord = (RecordPtr) malloc(sizeof (Record));
-    strcpy(newRecord->value[i], values[i]);
+  while (fscanf(fptr, "%s", value[0]) == 1 &&
+	 fscanf(fptr, "%s", value[1]) == 1 &&
+	 fscanf(fptr, "%s", value[2]) == 1) {
+  
+    Record record;
+    record.left = record.right = NULL;
 
-    for (int i = 0; i < NUM_TREES; i++) 
-      populateTree(trees[i], newRecord);
+    for (int i = 0; i < 3; i++)
+      strcpy(record.value[i], value[i]);
+
+    addRecord(record);
   }
-
+  
+  if (feof(fptr))
+    printf("%s loaded successfully\n", filename);
+  
   fclose(fptr);
 }
 
