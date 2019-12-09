@@ -17,13 +17,13 @@ Record createRecord() {
   Record newRecord;
 
   printf("First Name: ");
-  scanf("%s", newRecord.value[0]);
+  scanf("%20s", newRecord.value[0]);
 
   printf("Last Name: ");
-  scanf("%s", newRecord.value[1]);
+  scanf("%20s", newRecord.value[1]);
 
   printf("Phone Number: ");
-  scanf("%s", newRecord.value[2]);
+  scanf("%20s", newRecord.value[2]);
 
   newRecord.left = newRecord.right = NULL;
   return newRecord;
@@ -31,14 +31,27 @@ Record createRecord() {
 
 char* getAttribute(char type[]) {
   int attribute;
-
+  int result;
+  
   while(1) {
     printf("%s by:\n", type);
     printf("[1] First Name\n");
     printf("[2] Last Name\n");
     printf("[3] Phone Number\n");
     printf("> ");
-    scanf("%d", &attribute);
+
+    while(1) {
+      result = scanf("%d", &attribute);
+
+      if(result != 1) {
+	char c;
+	do {
+	  scanf("%c", &c);
+	} while (c != '\n');
+	printf("Enter a number in the range of 1 to 3\n");
+      } else
+	break;
+    }
     
     switch(attribute) {
     case 1:
@@ -47,8 +60,6 @@ char* getAttribute(char type[]) {
       return "Last Name";
     case 3:
       return "Phone Number";
-    default:
-      printf("Incorrect Number\n");
     }
   }
 }
@@ -56,7 +67,7 @@ char* getAttribute(char type[]) {
 char* getValue(char attribute[]) {
   static char value[NAME_SIZE];
   
-  printf("Enter %s: ", attribute);
+  printf("Enter %20s: ", attribute);
   scanf("%s", value);
   return value;
 }

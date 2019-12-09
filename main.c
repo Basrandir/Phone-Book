@@ -5,7 +5,10 @@
 int main() {
   setupPhoneBook();
 
+  int option;
+  int result;
   int cont = 1;
+  
   while(cont) {
     printf("\tPHONE BOOK\n");
     printf("[1] Add Contact\n");
@@ -15,10 +18,21 @@ int main() {
     printf("[5] Save Phone Book\n");
     printf("[6] Sort Phone Book\n");
     printf("[7] Exit\n");
-    
-    int option;
-    printf("> ");
-    scanf("%d", &option);
+
+    while(1) {
+      printf("> ");
+      result = scanf("%d", &option);
+      
+      if(result != 1 || option < 1 || option > 7) {
+	// Clears input buffer if user doesn't enter number
+	char c;
+	do {
+	  scanf("%c", &c);
+	} while(c != '\n');
+	printf("Enter a number in the range of 1 to 7\n");
+      } else
+	break;
+    }
     
     switch(option) {
     case 1:
@@ -41,6 +55,7 @@ int main() {
       break;
     case 7:
       cont = 0;
+      break;
     }
   }
 }
