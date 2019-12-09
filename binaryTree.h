@@ -10,7 +10,6 @@ typedef struct record {
 
 typedef struct {
   RecordPtr rootRecord;
-  int size;
   int type;
 } PhoneBook;
 

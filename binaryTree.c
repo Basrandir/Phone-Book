@@ -8,7 +8,6 @@ static PhoneBook trees[NUM_TREES];
 
 void setupPhoneBook() {
     for (int i = 0; i < NUM_TREES; i++) {
-    trees[i].size = 0;
     trees[i].type = i;
   }
 }
